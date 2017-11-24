@@ -37,6 +37,8 @@ TOKEN : { < TIMES : "*" > }  /* O caracter "*" retorna o token TIMES */
 TOKEN : { < DIVIDE : "/" > }  /* O caracter "/" retorna o token DIVIDE */
 TOKEN : { < NUMBER : (["0"-"9"])+ | (["0"-"9"])+ "." (["0"-"9"])+ | (["0"-"9"])+ "." | "." (["0"-"9"])+ > }  /* Numero em ponto flutuante */
 TOKEN : { < WORD : (["a"-"z"])+ | (["A"-"Z"])+ > }  /* Numero em ponto flutuante */
+TOKEN : { < ABRECHAVE : "{" > }  /* O caracter ")" para fecha parenteses */
+TOKEN : { < FECHACHAVE : "}" > }  /* O caracter ")" para fecha parenteses */
 
 
 // EOF : Retornado pelo implicitamente
@@ -48,12 +50,8 @@ void Start() :
 {
 }
 {
-      <WORD>
- (
- <PLUS>
- <NUMBER>
- )*
-
+      <WORD> <ABREPAR> <LAST> <WORD> <FECHAPAR> <ABRECHAVE> <WORD> <FECHACHAVE>
+ 
 
 
  <EOF>

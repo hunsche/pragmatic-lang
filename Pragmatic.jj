@@ -1,15 +1,15 @@
 options {
       STATIC = false;
 }
-PARSER_BEGIN(Somador)
-      class Somador {
+PARSER_BEGIN(Pragmatic)
+      class Pragmatic {
            static public void main( String[] args )
            throws ParseException, TokenMgrError {
-                Somador parser = new Somador( System.in ) ;
+                Pragmatic parser = new Pragmatic( System.in ) ;
                 parser.Start();
             }
       }
-PARSER_END(Somador)
+PARSER_END(Pragmatic)
 
 SKIP : { " "  
        | "\t"

@@ -1,6 +1,6 @@
 all:
 	javacc *.jj
 	javac *.java
-	java Somador < code.prag
+	java Pragmatic < code.prag
 clean:
 	rm -f *.java *.class

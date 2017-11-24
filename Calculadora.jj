@@ -28,8 +28,18 @@ SKIP : { "\n"   /* Saltar tambem variantes sobre o "nova linha" */
        | "\r"
        | "\r\n" }
 
-TOKEN : { < LAST : "$" > }  /* O caracter "(" para abre parenteses */
+TOKEN : { < EMPTY : "" > }
+TOKEN : { < FUNCTION : ("m") + ("a") + ("i") +("n") > }  /* O caracter ")" para fecha parenteses */
+TOKEN : { < TYPE : ("i") + ("n") + ("t")  | ("d") + ("o") + ("u") + ("b") + ("l") + ("e") | ("s") + ("t") + ("r") + ("i") + ("n") + ("g") > }  /* O caracter ")" para fecha parenteses */
+TOKEN : { < LAST : ";" > }  /* O caracter "(" para abre parenteses */
 TOKEN : { < ABREPAR : "(" > }  /* O caracter "(" para abre parenteses */
+TOKEN : { < ATRIBUICAO : ("=") | ("+") + ("=") | ("-") + ("=") > }
+TOKEN : { < INCREMENTO : ("+") + ("+") | ("-") + ("-") > }
+TOKEN : { < COMPARACAO : ("=") + ("=") | (">") + ("=") | ("<") + ("=") | (">") | ("<")> }
+TOKEN : { < CONCATCOMPARACAO : ("&") + ("&") | ("|") + ("|") > }
+TOKEN : { < RESERVADA :  ("f") + ("o") + ("r") | ("i") + ("f") > }
+TOKEN : { < BOOL : ("t") + ("r") + ("u") + ("e") | ("f") + ("a") + ("l") + ("s") + ("e")> }
+TOKEN : { < SEPARADOR : ("<") + ("<") | (">") + (">") > }
 TOKEN : { < FECHAPAR : ")" > }  /* O caracter ")" para fecha parenteses */
 TOKEN : { < PLUS : "+" > }  /* O caracter "+" retorna o token PLUS */
 TOKEN : { < MINUS : "-" > }  /* O caracter "-" retorna o token MINUS */
@@ -46,14 +56,38 @@ TOKEN : { < FECHACHAVE : "}" > }  /* O caracter ")" para fecha parenteses */
 // ---------------------------------------------------------
 // Sintatico
 // ---------------------------------------------------------
-void Start() :
-{
-}
-{
-      <WORD> <ABREPAR> <LAST> <WORD> <FECHAPAR> <ABRECHAVE> <WORD> <FECHACHAVE>
- 
 
+void Programacao() : {}{
+      (Declaracao())*
+      (Atribuicao())*      
+      (Condicao())*
+}
+
+void Start() : {}
+{
+      //<TYPE> <FUNCTION> <ABREPAR> <FECHAPAR> <ABRECHAVE>
+            Programacao()
+      //<FECHACHAVE>
 
  <EOF>
 }
 
+void Declaracao() : {}{
+      <TYPE> <WORD> (((<ATRIBUICAO> (<NUMBER> | <WORD>)) <LAST>) | <LAST>)
+}
+
+void Atribuicao() : {}{
+      <WORD> ((<ATRIBUICAO> (<NUMBER> | <WORD>)) | <INCREMENTO>) <LAST>
+}
+
+void Comparacao() : {} {
+      ((<BOOL> | ((<NUMBER> | <WORD>) <COMPARACAO> (<NUMBER> | <WORD>))) | ( <CONCATCOMPARACAO> Comparacao()))
+}
+
+void Condicao() : {}{
+      <RESERVADA> <ABREPAR> Comparacao() <FECHAPAR> <ABRECHAVE> Programacao() <FECHACHAVE>
+}
+
+void For() : {} {
+      <RESERVADA> <ABREPAR> Declaracao() Comparacao() <LAST> Atribuicao() <FECHAPAR> <ABRECHAVE> Programacao() <ABRECHAVE> <LAST>   
+}

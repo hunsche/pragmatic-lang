@@ -93,7 +93,7 @@ void main() : {} {
 }
 
 void Programacao() : {}{
-      (Variable() <LAST>)
+      (Variable() ((<LAST>) | (Aritmetico() <LAST>)))
       | Reservate()
       | Declaracao()
 }
@@ -108,6 +108,10 @@ void Declaracao() : {}{
 
 void Atribuicao() : {}{
       <NUMBER> | <WORD> | Literal()
+}
+
+void Aritmetico() : {}{
+      <OPERADOR> (<NUMBER> | <WORD>)
 }
 
 void Comparacao() : {} {

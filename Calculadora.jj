@@ -51,7 +51,8 @@ TOKEN : { < RESERVADA :
       | ("i") + ("f") 
       | ("b") + ("r") + ("e") + ("a") + ("k") 
       | ("c") + ("o") + ("u") + ("t") 
-      | ("c") + ("i") + ("n") > }
+      | ("c") + ("i") + ("n") 
+      | ("e") + ("l") + ("s") + ("e") > }
 TOKEN : { < BOOL : 
       ("t") + ("r") + ("u") + ("e") 
       | ("f") + ("a") + ("l") + ("s") + ("e")> }
@@ -85,44 +86,36 @@ void Start() : {}{
 }
 
 void main() : {} {
-      // <TYPE> <FUNCTION> <ABREPAR> <FECHAPAR> <ABRECHAVE>
+      <TYPE> <FUNCTION> <ABREPAR> <FECHAPAR> <ABRECHAVE>
             (Programacao())*
-      // <FECHACHAVE>
+      <FECHACHAVE>
       <EOF>
 }
 
-
 void Programacao() : {}{
-      (Reservate()
-      | AtribuicaoLiteral()
-      | Aritmeticas()
+      (Variable() <LAST>)
+      | Reservate()
       | Declaracao()
-      | (Atribuicao() <LAST>)
-      | LacoECondicionas())
+}
+
+void Variable() : {}{
+      <WORD> (<INCREMENTO> | <ATRIBUICAO> Atribuicao())
 }
 
 void Declaracao() : {}{
-      <TYPE> <WORD> (((<ATRIBUICAO> (<NUMBER> | <WORD>)) <LAST>) | <LAST>)
+      <TYPE> <WORD> (((<ATRIBUICAO> (<NUMBER> | <WORD> | Literal())) <LAST>) | <LAST>)
 }
 
 void Atribuicao() : {}{
-      <WORD> ((<ATRIBUICAO> (<NUMBER> | <WORD> | Literal())) | <INCREMENTO>)
-}
-
-void Aritmeticas() : {}{
-      <WORD> <ATRIBUICAO> (<NUMBER> | <WORD>) <OPERADOR> (<WORD> | <NUMBER>) <LAST>
-}
-
-void AtribuicaoLiteral() : {}{
-      <WORD> (<ATRIBUICAO> Literal()) <LAST>
+      <NUMBER> | <WORD> | Literal()
 }
 
 void Comparacao() : {} {
       ((<BOOL> | ((<NUMBER> | <WORD>) <COMPARACAO> (<NUMBER> | <WORD>))))
 }
 
-void LacoECondicionas() : {} {
-      <RESERVADA> <ABREPAR> ((Declaracao() Comparacao() <LAST> Atribuicao()) | Comparacao()) <FECHAPAR> <ABRECHAVE> Programacao() <FECHACHAVE>
+void LacoECondicionas() : {} {      
+      (<ABREPAR> ((Declaracao() Comparacao() <LAST> Variable()) | Comparacao()) <FECHAPAR> <ABRECHAVE> (Programacao())* <FECHACHAVE>) | (<ABRECHAVE> (Programacao())* <FECHACHAVE>)
 }
 
 void Separate(): {} {
@@ -130,7 +123,7 @@ void Separate(): {} {
 }
 
 void Reservate() : {} {
-      <RESERVADA>  ((((<WORD> | <NUMBER>) <LAST>) | (Separate() <LAST>)) | <LAST>)
+      <RESERVADA> (LacoECondicionas() | (((((<WORD> | <NUMBER>) <LAST>) | (Separate() <LAST>)) | <LAST>)))
 }
 
 void Literal() : {} {

@@ -27,9 +27,17 @@ SKIP : { " "    /* Estes caracteres devem ser saltados */
 SKIP : { "\n"   /* Saltar tambem variantes sobre o "nova linha" */
        | "\r"
        | "\r\n" }
+
+TOKEN : { < LAST : "$" > }  /* O caracter "(" para abre parenteses */
+TOKEN : { < ABREPAR : "(" > }  /* O caracter "(" para abre parenteses */
+TOKEN : { < FECHAPAR : ")" > }  /* O caracter ")" para fecha parenteses */
 TOKEN : { < PLUS : "+" > }  /* O caracter "+" retorna o token PLUS */
-TOKEN : { < NUMBER : (["0"-"9"])+ > } /* Um numero: token NUMBER */
-TOKEN : { < WORD : (["i","f"])+ > } /* Um numero: token NUMBER */
+TOKEN : { < MINUS : "-" > }  /* O caracter "-" retorna o token MINUS */
+TOKEN : { < TIMES : "*" > }  /* O caracter "*" retorna o token TIMES */
+TOKEN : { < DIVIDE : "/" > }  /* O caracter "/" retorna o token DIVIDE */
+TOKEN : { < NUMBER : (["0"-"9"])+ | (["0"-"9"])+ "." (["0"-"9"])+ | (["0"-"9"])+ "." | "." (["0"-"9"])+ > }  /* Numero em ponto flutuante */
+TOKEN : { < WORD : (["a"-"z"])+ | (["A"-"Z"])+ > }  /* Numero em ponto flutuante */
+
 
 // EOF : Retornado pelo implicitamente
 
